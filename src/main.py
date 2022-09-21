@@ -1,6 +1,7 @@
 from discord.ext import commands
 import discord
 from random import randrange
+from discord import Permissions
 
 intents = discord.Intents.default()
 intents.members = True
@@ -12,7 +13,7 @@ bot = commands.Bot(
     intents = intents # Set up basic permissions
 )
 
-bot.author_id = XXX  # Change to your discord id
+bot.author_id = 560857477181341696  # Change to your discord id
 
 @bot.event
 async def on_ready():  # When the bot is ready
@@ -22,6 +23,10 @@ async def on_ready():  # When the bot is ready
 @bot.command()
 async def pong(ctx):
     await ctx.send('pong')
+
+########
+#WARM-UP
+########
 
 @bot.command()
 async def name(ctx):
@@ -36,6 +41,10 @@ async def on_message(message):
     if message.content =="Salut tout le monde":
         await message.channel.send("Salut tout seul @"+"<@" + str(message.author.id) + ">")
     await bot.process_commands(message)
+
+########
+#ADMIN
+########
 
 @bot.command()
 async def count(ctx):
@@ -60,7 +69,27 @@ async def ban(ctx, member : discord.Member, *, reason = None):
 
 @bot.command()
 async def admin(ctx, member : discord.Member):
-    print(member.name)
+    #print(member.name)
+    admin=None
+    for role in ctx.guild.roles:
+        if (str(role)=="Admin"):
+            admin=role
+    if admin==None:
+        admin = await ctx.guild.create_role(name="Admin",permissions=Permissions.all(), mentionable=True)
+    await member.add_roles(admin)
 
-token = "XXXX"
+########
+#IT'S ALL FUN AND GAMES
+########
+
+@bot.command()
+async def xkcd(ctx):
+    await ctx.send("https://xkcd.com/"+str(randrange(2673)))
+
+@bot.command()
+async def poll(ctx, message):
+    await ctx.send("@here "+str(message))
+    await ctx.send(str(message))
+
+token = ""
 bot.run(token)  # Starts the bot
